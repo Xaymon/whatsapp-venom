@@ -8,35 +8,28 @@ const chatName = "Whatapps test";
 
 async function captureExchangeRate() {
   const browser = await puppeteer.launch({
-    executablePath: "/usr/bin/google-chrome",
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    executablePath: "/usr/bin/chromium-browser",
+    ignoreDefaultArgs: ["--disable-extensions"],
     headless: true,
-    // defaultViewport: { width: 1920, height: 1080 },
+    defaultViewport: { width: 1920, height: 1080 },
   });
   const page = await browser.newPage();
 
-  try {
-    await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html", {
-      waitUntil: "networkidle2", // faster than networkidle2 "domcontentloaded"
-    });
+  await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html?lang=en", {
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    waitUntil: "networkidle2",
+  });
 
-    // Wait for the table to appear
-    await page.waitForSelector("div.table-responsive", { timeout: 30000 });
-
-    const table = await page.$("div.table-responsive");
-    if (table) {
-      const screenshotPath = "exchange_rate.png";
-      await table.screenshot({ path: screenshotPath });
-      console.log("✅ Screenshot saved: exchange_rate.png");
-      return screenshotPath;
-    } else {
-      console.log("❌ Exchange rate table not found!");
-    }
-  } catch (err) {
-    console.error("❌ Puppeteer capture failed:", err);
-  } finally {
-    await browser.close();
+  const table = await page.$("div.table-responsive");
+  if (table) {
+    await table.screenshot({ path: "exchange_rate.png" });
+    console.log("✅ Screenshot saved: exchange_rate.png");
+  } else {
+    console.log("❌ Exchange rate table not found!");
   }
+
+  await browser.close();
 }
 
 const transporter = nodemailer.createTransport({
@@ -85,6 +78,19 @@ venom
     (statusSession, session) => {
       console.log("🟢 Status:", statusSession);
       console.log("📂 Session name:", session);
+
+      // When session expired / disconnected → new QR will be generated
+      if (
+        statusSession === "notLogged" ||
+        statusSession === "desconnectedMobile" ||
+        statusSession === "qrReadError"
+      ) {
+        console.log(
+          "⚠️ Session expired or disconnected. Waiting for new QR..."
+        );
+        // No need to manually call sendQrCodeByEmail here,
+        // Venom will automatically trigger QR callback again.
+      }
     }
   )
   .then((client) => start(client))
