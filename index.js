@@ -8,7 +8,7 @@ const chatName = "Whatapps test";
 
 async function captureExchangeRate() {
   const browser = await puppeteer.launch({
-    executablePath: "/usr/bin/chromium-browser",
+    executablePath: "/snap/bin/chromium",
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     headless: true,
     defaultViewport: { width: 1920, height: 1080 },
