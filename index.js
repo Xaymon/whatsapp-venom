@@ -8,7 +8,7 @@ const chatName = "Whatapps test";
 
 async function captureExchangeRate() {
   const browser = await puppeteer.launch({
-    executablePath: "/snap/bin/chromium",
+    executablePath: "/usr/bin/google-chrome",
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     headless: true,
     defaultViewport: { width: 1920, height: 1080 },
@@ -17,7 +17,7 @@ async function captureExchangeRate() {
 
   try {
     await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html", {
-      waitUntil: networkidle2, // faster than networkidle2 "domcontentloaded"
+      waitUntil: "networkidle2", // faster than networkidle2 "domcontentloaded"
       timeout: 60000,
     });
 
