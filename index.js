@@ -11,14 +11,13 @@ async function captureExchangeRate() {
     executablePath: "/usr/bin/google-chrome",
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     headless: true,
-    defaultViewport: { width: 1920, height: 1080 },
+    // defaultViewport: { width: 1920, height: 1080 },
   });
   const page = await browser.newPage();
 
   try {
     await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html", {
       waitUntil: "networkidle2", // faster than networkidle2 "domcontentloaded"
-      timeout: 60000,
     });
 
     // Wait for the table to appear
@@ -26,8 +25,10 @@ async function captureExchangeRate() {
 
     const table = await page.$("div.table-responsive");
     if (table) {
-      await table.screenshot({ path: "exchange_rate.png" });
+      const screenshotPath = "exchange_rate.png";
+      await table.screenshot({ path: screenshotPath });
       console.log("✅ Screenshot saved: exchange_rate.png");
+      return screenshotPath;
     } else {
       console.log("❌ Exchange rate table not found!");
     }
@@ -37,7 +38,6 @@ async function captureExchangeRate() {
     await browser.close();
   }
 }
-
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
@@ -96,33 +96,33 @@ async function start(client) {
   // cron.schedule("0 3,10 * * *", async () => { //UTC
   //   console.log("✅ WhatsApp client is ready!");
 
-    try {
-      console.log("⏰ Running scheduled task: 10AM or 5PM daily");
-      // Step 1: Capture exchange rate
-      await captureExchangeRate();
+  try {
+    console.log("⏰ Running scheduled task: 10AM or 5PM daily");
+    // Step 1: Capture exchange rate
+    await captureExchangeRate();
 
-      // Step 2: Load screenshot
-      const now = new Date();
-      const dateStr = now.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
-      const timeStr = now.getHours() === 10 ? "10AM" : "5PM";
-      const caption = `${dateStr} ${timeStr}`;
-      const chats = await client.getAllChats();
-      const group = chats.find((chat) => chat.name === chatName);
+    // Step 2: Load screenshot
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
+    const timeStr = now.getHours() === 10 ? "10AM" : "5PM";
+    const caption = `${dateStr} ${timeStr}`;
+    const chats = await client.getAllChats();
+    const group = chats.find((chat) => chat.name === chatName);
 
-      if (group) {
-        // await client.sendText(group.id._serialized, { caption });
-        await client.sendImage(
-          group.id._serialized,
-          "exchange_rate.png",
-          "ExchangeRate",
-          caption
-        );
-        console.log(`📤 Sent message to ${chatName}`);
-      } else {
-        console.log(`❌ ${chatName} not found!`);
-      }
-    } catch (err) {
-      console.error("❌ Error sending message:", err);
+    if (group) {
+      // await client.sendText(group.id._serialized, { caption });
+      await client.sendImage(
+        group.id._serialized,
+        "exchange_rate.png",
+        "ExchangeRate",
+        caption
+      );
+      console.log(`📤 Sent message to ${chatName}`);
+    } else {
+      console.log(`❌ ${chatName} not found!`);
     }
+  } catch (err) {
+    console.error("❌ Error sending message:", err);
+  }
   // });
 }
