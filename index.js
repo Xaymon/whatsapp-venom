@@ -15,10 +15,12 @@ async function captureExchangeRate() {
   const page = await browser.newPage();
 
   await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html?lang=en", {
-    waitUntil: "networkidle2",
+    waitUntil: "domcontentloaded",
+    // waitUntil: "networkidle2",
+    timeout: 60000, // 60s
   });
 
-  const table = await page.$("div.table-responsive");
+  const table = await page.$("div.table-responsive", { timeout: 30000 });
   if (table) {
     await table.screenshot({ path: "exchange_rate.png" });
     console.log("✅ Screenshot saved: exchange_rate.png");
@@ -83,8 +85,8 @@ venom
   });
 
 async function start(client) {
-  cron.schedule("0 3,10 * * *", async () => { //UTC
-    console.log("✅ WhatsApp client is ready!");
+  // cron.schedule("0 3,10 * * *", async () => { //UTC
+  //   console.log("✅ WhatsApp client is ready!");
 
     try {
       console.log("⏰ Running scheduled task: 10AM or 5PM daily");
@@ -114,5 +116,5 @@ async function start(client) {
     } catch (err) {
       console.error("❌ Error sending message:", err);
     }
-  });
+  // });
 }
