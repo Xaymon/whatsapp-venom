@@ -107,36 +107,37 @@ venom
   });
 
 async function start(client) {
-  // cron.schedule("0 3,10 * * *", async () => { //UTC
-  //   console.log("✅ WhatsApp client is ready!");
+  cron.schedule("0 3,10 * * *", async () => {
+    //UTC
+    console.log("✅ WhatsApp client is ready!");
 
-  try {
-    console.log("⏰ Running scheduled task: 10AM or 5PM daily");
-    // Step 1: Capture exchange rate
-    await captureExchangeRate();
+    try {
+      console.log("⏰ Running scheduled task: 10AM or 5PM daily");
+      // Step 1: Capture exchange rate
+      await captureExchangeRate();
 
-    // Step 2: Load screenshot
-    const now = new Date();
-    const dateStr = now.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
-    const timeStr = now.getHours() === 10 ? "10AM" : "5PM";
-    const caption = `${dateStr} ${timeStr}`;
-    const chats = await client.getAllChats();
-    const group = chats.find((chat) => chat.name === chatName);
+      // Step 2: Load screenshot
+      const now = new Date();
+      const dateStr = now.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
+      const timeStr = now.getHours() === 10 ? "10AM" : "5PM";
+      const caption = `${dateStr} ${timeStr}`;
+      const chats = await client.getAllChats();
+      const group = chats.find((chat) => chat.name === chatName);
 
-    if (group) {
-      // await client.sendText(group.id._serialized, { caption });
-      await client.sendImage(
-        group.id._serialized,
-        "exchange_rate.png",
-        "ExchangeRate",
-        caption
-      );
-      console.log(`📤 Sent message to ${chatName}`);
-    } else {
-      console.log(`❌ ${chatName} not found!`);
+      if (group) {
+        // await client.sendText(group.id._serialized, { caption });
+        await client.sendImage(
+          group.id._serialized,
+          "exchange_rate.png",
+          "ExchangeRate",
+          caption
+        );
+        console.log(`📤 Sent message to ${chatName}`);
+      } else {
+        console.log(`❌ ${chatName} not found!`);
+      }
+    } catch (err) {
+      console.error("❌ Error sending message:", err);
     }
-  } catch (err) {
-    console.error("❌ Error sending message:", err);
-  }
-  // });
+  });
 }
