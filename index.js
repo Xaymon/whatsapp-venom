@@ -14,22 +14,29 @@ async function captureExchangeRate() {
   });
   const page = await browser.newPage();
 
-  await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html?lang=en", {
-    waitUntil: "domcontentloaded",
-    // waitUntil: "networkidle2",
-    timeout: 60000, // 60s
-  });
+  try {
+    await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html?lang=en", {
+      waitUntil: "domcontentloaded", // faster than networkidle2
+      timeout: 60000,
+    });
 
-  const table = await page.$("div.table-responsive", { timeout: 30000 });
-  if (table) {
-    await table.screenshot({ path: "exchange_rate.png" });
-    console.log("✅ Screenshot saved: exchange_rate.png");
-  } else {
-    console.log("❌ Exchange rate table not found!");
+    // Wait for the table to appear
+    await page.waitForSelector("div.table-responsive", { timeout: 30000 });
+
+    const table = await page.$("div.table-responsive");
+    if (table) {
+      await table.screenshot({ path: "exchange_rate.png" });
+      console.log("✅ Screenshot saved: exchange_rate.png");
+    } else {
+      console.log("❌ Exchange rate table not found!");
+    }
+  } catch (err) {
+    console.error("❌ Puppeteer capture failed:", err);
+  } finally {
+    await browser.close();
   }
-
-  await browser.close();
 }
+
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
