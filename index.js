@@ -83,7 +83,7 @@ venom
   });
 
 async function start(client) {
-  cron.schedule("0 10,17 * * *", async () => {
+  cron.schedule("0 3,10 * * *", async () => { //UTC
     console.log("✅ WhatsApp client is ready!");
 
     try {
