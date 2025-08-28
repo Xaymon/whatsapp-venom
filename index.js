@@ -8,6 +8,7 @@ const chatName = "Whatapps test";
 
 async function captureExchangeRate() {
   const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
     headless: true,
     defaultViewport: { width: 1920, height: 1080 },
   });
@@ -62,6 +63,7 @@ venom
     {
       session: "my-bot-session",
       headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     },
     // --- QR callback ---
     (base64Qr, asciiQR, attempts, urlCode) => {
