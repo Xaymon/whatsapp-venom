@@ -121,7 +121,7 @@ async function start(client) {
   try {
     console.log("⏰ Running scheduled task: 10AM or 5PM daily");
     // Step 1: Capture exchange rate
-    await captureExchangeRate();
+    // await captureExchangeRate();
 
     // Step 2: Load screenshot
     const now = new Date();
@@ -132,13 +132,13 @@ async function start(client) {
     const group = chats.find((chat) => chat.name === chatName);
 
     if (group) {
-      // await client.sendText(group.id._serialized, { caption });
-      await client.sendImage(
-        group.id._serialized,
-        "exchange_rate.png",
-        "ExchangeRate",
-        caption
-      );
+      await client.sendText(group.id._serialized, { caption });
+      // await client.sendImage(
+      //   group.id._serialized,
+      //   "exchange_rate.png",
+      //   "ExchangeRate",
+      //   caption
+      // );
       console.log(`📤 Sent message to ${chatName}`);
     } else {
       console.log(`❌ ${chatName} not found!`);
