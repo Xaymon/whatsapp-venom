@@ -17,7 +17,7 @@ async function captureExchangeRate() {
       "--no-zygote",
       "--single-process",
     ],
-    executablePath: "/usr/bin/chromium-browser",
+    executablePath: "/usr/bin/google-chrome-stable",
     ignoreDefaultArgs: ["--disable-extensions"],
     headless: true,
     defaultViewport: { width: 1920, height: 1080 },
