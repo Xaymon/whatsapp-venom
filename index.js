@@ -107,7 +107,7 @@ venom
   });
 
 async function start(client) {
-  cron.schedule("0 3,10 * * *", async () => {
+  // cron.schedule("0 3,10 * * *", async () => {
     //UTC
     console.log("✅ WhatsApp client is ready!");
 
@@ -139,5 +139,5 @@ async function start(client) {
     } catch (err) {
       console.error("❌ Error sending message:", err);
     }
-  });
+  // });
 }
