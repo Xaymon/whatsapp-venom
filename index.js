@@ -132,7 +132,7 @@ async function start(client) {
     const group = chats.find((chat) => chat.name === chatName);
 
     if (group) {
-      await client.sendText(group.id._serialized, { caption });
+      await client.sendText(group.id._serialized, caption );
       // await client.sendImage(
       //   group.id._serialized,
       //   "exchange_rate.png",
