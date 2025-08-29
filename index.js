@@ -41,7 +41,7 @@ async function captureExchangeRate() {
 
     // await browser.close();
   } catch (error) {
-    console.error("⚠️ Puppeteer error:", err.message);
+    console.error("⚠️ Puppeteer error:", error.message);
   } finally {
     await browser.close();
   }
