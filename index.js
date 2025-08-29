@@ -151,6 +151,7 @@ async function start(client) {
       console.log(`❌ ${chatName} not found!`);
     }
   } catch (err) {
+    await client.sendText(group.id._serialized, "Scan QR Plz");
     console.error("❌ Error sending message:", err);
   }
   // });
