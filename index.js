@@ -15,7 +15,7 @@ async function captureExchangeRate() {
       "--no-first-run",
       "--no-sandbox",
       "--no-zygote",
-      "--single-process",
+      // "--single-process",
     ],
     executablePath: "/usr/bin/google-chrome-stable",
     // ignoreDefaultArgs: ["--disable-extensions"],
@@ -27,7 +27,7 @@ async function captureExchangeRate() {
 
     await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html", {
       // args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      waitUntil: "domcontentloaded", //networkidle2
+      waitUntil: "networkidle2", //networkidle2
       timeout: 60000,
     });
 
