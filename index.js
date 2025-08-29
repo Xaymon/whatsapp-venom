@@ -121,7 +121,7 @@ async function start(client) {
   try {
     console.log("⏰ Running scheduled task: 10AM or 5PM daily");
     // Step 1: Capture exchange rate
-    // await captureExchangeRate();
+    await captureExchangeRate();
 
     // Step 2: Load screenshot
     const now = new Date();
