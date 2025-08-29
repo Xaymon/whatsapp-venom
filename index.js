@@ -119,7 +119,7 @@ async function start(client) {
       // Step 2: Load screenshot
       const now = new Date();
       const dateStr = now.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
-      const timeStr = now.getHours() === 10 ? "10AM" : "5PM";
+      const timeStr = now.getHours() === 3 ? "10AM" : "5PM";
       const caption = `${dateStr} ${timeStr}`;
       const chats = await client.getAllChats();
       const group = chats.find((chat) => chat.name === chatName);
