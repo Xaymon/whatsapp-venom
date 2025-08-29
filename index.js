@@ -44,11 +44,11 @@ async function captureExchangeRate() {
   } catch (error) {
     console.error("⚠️ Puppeteer error:", error.message);
   } finally {
-    if (browser) {
+    if (browser && browser.process() != null) {
       try {
         await browser.close();
       } catch (e) {
-        console.log("Browser already closed");
+        console.log("⚠️ Browser already closed.");
       }
     }
   }
