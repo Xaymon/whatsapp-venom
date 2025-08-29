@@ -19,7 +19,7 @@ async function captureExchangeRate() {
     ],
     executablePath: "/usr/bin/google-chrome-stable",
     // ignoreDefaultArgs: ["--disable-extensions"],
-    headless: true,
+    headless: "new",
     defaultViewport: { width: 1920, height: 1080 },
   });
   try {
