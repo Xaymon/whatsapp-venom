@@ -18,26 +18,33 @@ async function captureExchangeRate() {
       "--single-process",
     ],
     executablePath: "/usr/bin/google-chrome-stable",
-    ignoreDefaultArgs: ["--disable-extensions"],
+    // ignoreDefaultArgs: ["--disable-extensions"],
     headless: true,
     defaultViewport: { width: 1920, height: 1080 },
   });
-  const page = await browser.newPage();
+  try {
+    const page = await browser.newPage();
 
-  await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html", {
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    waitUntil: "networkidle2", //networkidle2
-  });
+    await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html", {
+      // args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      waitUntil: "networkidle2", //networkidle2
+      timeout: 60000,
+    });
 
-  const table = await page.$("div.table-responsive");
-  if (table) {
-    await table.screenshot({ path: "exchange_rate.png" });
-    console.log("✅ Screenshot saved: exchange_rate.png");
-  } else {
-    console.log("❌ Exchange rate table not found!");
+    const table = await page.$("div.table-responsive");
+    if (table) {
+      await table.screenshot({ path: "exchange_rate.png" });
+      console.log("✅ Screenshot saved: exchange_rate.png");
+    } else {
+      console.log("❌ Exchange rate table not found!");
+    }
+
+    // await browser.close();
+  } catch (error) {
+    console.error("⚠️ Puppeteer error:", err.message);
+  } finally {
+    await browser.close();
   }
-
-  await browser.close();
 }
 
 const transporter = nodemailer.createTransport({
@@ -108,36 +115,36 @@ venom
 
 async function start(client) {
   // cron.schedule("0 3,10 * * *", async () => {
-    //UTC
-    console.log("✅ WhatsApp client is ready!");
+  //UTC
+  console.log("✅ WhatsApp client is ready!");
 
-    try {
-      console.log("⏰ Running scheduled task: 10AM or 5PM daily");
-      // Step 1: Capture exchange rate
-      await captureExchangeRate();
+  try {
+    console.log("⏰ Running scheduled task: 10AM or 5PM daily");
+    // Step 1: Capture exchange rate
+    await captureExchangeRate();
 
-      // Step 2: Load screenshot
-      const now = new Date();
-      const dateStr = now.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
-      const timeStr = now.getHours() === 3 ? "10AM" : "5PM";
-      const caption = `${dateStr} ${timeStr}`;
-      const chats = await client.getAllChats();
-      const group = chats.find((chat) => chat.name === chatName);
+    // Step 2: Load screenshot
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
+    const timeStr = now.getHours() === 3 ? "10AM" : "5PM";
+    const caption = `${dateStr} ${timeStr}`;
+    const chats = await client.getAllChats();
+    const group = chats.find((chat) => chat.name === chatName);
 
-      if (group) {
-        // await client.sendText(group.id._serialized, { caption });
-        await client.sendImage(
-          group.id._serialized,
-          "exchange_rate.png",
-          "ExchangeRate",
-          caption
-        );
-        console.log(`📤 Sent message to ${chatName}`);
-      } else {
-        console.log(`❌ ${chatName} not found!`);
-      }
-    } catch (err) {
-      console.error("❌ Error sending message:", err);
+    if (group) {
+      // await client.sendText(group.id._serialized, { caption });
+      await client.sendImage(
+        group.id._serialized,
+        "exchange_rate.png",
+        "ExchangeRate",
+        caption
+      );
+      console.log(`📤 Sent message to ${chatName}`);
+    } else {
+      console.log(`❌ ${chatName} not found!`);
     }
+  } catch (err) {
+    console.error("❌ Error sending message:", err);
+  }
   // });
 }
