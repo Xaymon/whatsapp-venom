@@ -24,9 +24,9 @@ async function captureExchangeRate() {
   });
   const page = await browser.newPage();
 
-  await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html?lang=en", {
+  await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html", {
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    waitUntil: "domcontentloaded", //networkidle2
+    waitUntil: "networkidle2", //networkidle2
   });
 
   const table = await page.$("div.table-responsive");
