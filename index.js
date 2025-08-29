@@ -32,18 +32,25 @@ async function captureExchangeRate() {
     });
 
     const table = await page.$("div.table-responsive");
-    if (table) {
-      await table.screenshot({ path: "exchange_rate.png" });
-      console.log("✅ Screenshot saved: exchange_rate.png");
-    } else {
-      console.log("❌ Exchange rate table not found!");
-    }
+    if (!table) throw new Error("❌ Exchange rate table not found");
+    // if (table) {
+    await table.screenshot({ path: "exchange_rate.png" });
+    console.log("✅ Screenshot saved: exchange_rate.png");
+    // } else {
+    //   console.log("❌ Exchange rate table not found!");
+    // }
 
     // await browser.close();
   } catch (error) {
-    console.error("X⚠️ Puppeteer error:", error.message);
+    console.error("⚠️ Puppeteer error:", error.message);
   } finally {
-    await browser.close();
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (e) {
+        console.log("Browser already closed");
+      }
+    }
   }
 }
 
@@ -132,7 +139,7 @@ async function start(client) {
     const group = chats.find((chat) => chat.name === chatName);
 
     if (group) {
-      await client.sendText(group.id._serialized, caption );
+      await client.sendText(group.id._serialized, caption);
       // await client.sendImage(
       //   group.id._serialized,
       //   "exchange_rate.png",
