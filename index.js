@@ -27,7 +27,7 @@ async function captureExchangeRate() {
 
     await page.goto("https://www.bcel.com.la/bcel/exchange-rate.html", {
       // args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      waitUntil: "networkidle2", //networkidle2
+      waitUntil: "domcontentloaded", //networkidle2
       timeout: 60000,
     });
 
